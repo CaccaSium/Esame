@@ -8,15 +8,12 @@ public abstract class Scaffale_astratto implements Scaffale{
     private List<Supporto> lista;
     private final int lunghezza_mensola;
 
-    public Scaffale_astratto(LinkedList<Supporto> l,int ID){
+    public Scaffale_astratto(List<Supporto> l,int ID){
         if (l == null)
             throw new IllegalArgumentException();
         lunghezza_mensola = 10;
         this.ID = ID;
-        lista = new LinkedList<>();
-        for(Supporto s : l)
-            if(s != null)
-                lista.add(s);
+        lista = l;
         this.ordina();
     }
 

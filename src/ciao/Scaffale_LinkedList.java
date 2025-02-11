@@ -12,7 +12,7 @@ public class Scaffale_LinkedList extends Scaffale_astratto{
         super(ohmygod,ID);
         this.ID = ID;
         lunghezza_mensola = 10;
-        lista = new LinkedList<>();
+        lista = ohmygod;
         this.ordina();
     }
 

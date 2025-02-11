@@ -7,8 +7,8 @@ import java.util.List;
 
 public class Scaffale_LC<T> extends Scaffale_astratto{
 
-    public Scaffale_LC(My_list m, int ID){
-        super(m.elementi(), ID);
+    public Scaffale_LC(List<Supporto> s, int ID){
+        super(new My_list<>(s), ID);
     }
 
     @Override
@@ -27,14 +27,9 @@ class My_list<T> extends AbstractList<T> implements Iterable<T>{
         grandezza_mensola = 10;
     }
 
-    public LinkedList<Nodo> elementi(){
-        var fin = new LinkedList<Nodo>();
-        Nodo<T> n = testa;
-        while (n != null) {
-            fin.add(n);
-            n = n.next;
-        }
-        return fin;
+    public My_list(List<Supporto> l){
+        for(Supporto elem : l)
+            this.aggiungiInCoda(elem.getTitolo(),elem.annoAcquisto(),elem.annoEdizione(),elem.getAutore(),elem.getGenere());
     }
 
     @Override
@@ -51,22 +46,20 @@ class My_list<T> extends AbstractList<T> implements Iterable<T>{
         return null;
     }
 
-    public void aggiungiInCoda(String info){
+    public void aggiungiInCoda(Titolo info,Anno anno_a, Anno anno_e, Nominativo autore, Genere genere){
         if(info == null)
             throw new IllegalArgumentException("sei un coglione");
         if(testa == null){
-            testa = new Nodo<>(info, null);
+            testa = new Nodo<>(info,null,anno_a,anno_a,autore,genere);
         }
         else{
             Nodo<T> n = testa;
             while (n.next != null)
                 n = n.next;
-            n.next = new Nodo<>(info, null);
+            n.next = new Nodo<>(info,null,anno_a,anno_a,autore,genere);
         }
         size++;
     }
-
-    //il metodo ordina te lo fai solo perchè mi caco il cazzo
 
     public List<Nodo<T>> mensola(int index){
         int inizio = index * grandezza_mensola;
@@ -92,20 +85,27 @@ class My_list<T> extends AbstractList<T> implements Iterable<T>{
         List<Nodo<T>> lista_fin = new LinkedList<>();
         Nodo<T> n = testa;
         while (n.next != null){
-            if(n.info.contains(keyword))
+            if(n.titolo.titolo().contains(keyword))
                 lista_fin.add(n);
             n = n.next;
         }
         return lista_fin;
     }
 
-
     private static class Nodo<T>{ //qua il nodo sarebbe il supporto
-        private String info; //info è il titolo
+        private Titolo titolo;
+        private Anno anno_e;
+        private Anno anno_a;
+        private Nominativo autore;
+        private Genere genere;
         private Nodo<T> next;
 
-        public Nodo(String info, Nodo<T> next) {
-            this.info = info;
+        public Nodo(Titolo titolo, Nodo<T> next, Anno anno_a, Anno anno_e, Nominativo autore, Genere genere) {
+            this.titolo = titolo;
+            this.anno_a = anno_a;
+            this.anno_e = anno_e;
+            this.autore = autore;
+            this.genere = genere;
             this.next = next;
         }
 
