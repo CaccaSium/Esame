@@ -7,9 +7,8 @@ import java.util.List;
 
 public class Scaffale_LC<T> extends Scaffale_astratto{
 
-    public Scaffale_LC(int ID){
-        super(new My_list<>(), ID);
-
+    public Scaffale_LC(My_list m, int ID){
+        super(m.elementi(), ID);
     }
 
     @Override
@@ -28,9 +27,23 @@ class My_list<T> extends AbstractList<T> implements Iterable<T>{
         grandezza_mensola = 10;
     }
 
+    public LinkedList<Nodo> elementi(){
+        var fin = new LinkedList<Nodo>();
+        Nodo<T> n = testa;
+        while (n != null) {
+            fin.add(n);
+            n = n.next;
+        }
+        return fin;
+    }
+
     @Override
     public int size() {
         return size;
+    }
+
+    public Nodo<T> getTesta() {
+        return testa;
     }
 
     @Override
@@ -50,6 +63,7 @@ class My_list<T> extends AbstractList<T> implements Iterable<T>{
                 n = n.next;
             n.next = new Nodo<>(info, null);
         }
+        size++;
     }
 
     //il metodo ordina te lo fai solo perchè mi caco il cazzo
@@ -97,4 +111,3 @@ class My_list<T> extends AbstractList<T> implements Iterable<T>{
 
     }
 }
-

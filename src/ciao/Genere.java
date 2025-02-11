@@ -4,27 +4,40 @@ public class Genere {
     private String genere;
     private String supporto;
 
-    public Genere(String genere, String supporto){
-        if(supporto.equals("CD")){
-            for (Genere_CD g : Genere_CD.values()){
-                if (genere.equalsIgnoreCase(g.name())){
-                    this.genere = genere;
-                    this.supporto = supporto;
+    public Genere(String genere, String supporto) {
+        // Validate supporto
+        if (!supporto.equals("CD") && !supporto.equals("LIBRO")) {
+            throw new IllegalArgumentException("Supporto non valido: " + supporto);
+        }
+
+        // Validate genere based on supporto
+        boolean isValidGenere = false;
+        if (supporto.equals("CD")) {
+            for (Genere_CD g : Genere_CD.values()) {
+                if (genere.equalsIgnoreCase(g.name())) {
+                    isValidGenere = true;
+                    break;
+                }
+            }
+        } else if (supporto.equals("LIBRO")) {
+            for (Genere_Libri l : Genere_Libri.values()) {
+                if (genere.equalsIgnoreCase(l.name())) {
+                    isValidGenere = true;
+                    break;
                 }
             }
         }
-        if(supporto.equals("LIBRO")){
-            for(Genere_Libri l : Genere_Libri.values()){
-                if (genere.equalsIgnoreCase(l.name())){
-                    this.genere = genere;
-                    this.supporto = supporto;
-                }
-            }
+
+        if (!isValidGenere) {
+            throw new IllegalArgumentException("Genere non valido per il supporto: " + genere);
         }
-        throw new IllegalArgumentException("genere o supporto non esistente");
+
+        // Assign values if validation passes
+        this.genere = genere;
+        this.supporto = supporto;
     }
 
-    public String getGenere(){
+    public String getGenere() {
         return this.genere;
     }
 

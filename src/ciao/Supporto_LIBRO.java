@@ -8,7 +8,7 @@ public class Supporto_LIBRO implements Supporto{
     Genere genere;
 
     public Supporto_LIBRO(Titolo t, Anno aE, Anno aA, Nominativo n, Genere g ){
-        if(aE.anno() < aA.anno() || !g.getSupporto().equals("LIBRO"))
+        if(aE.anno() > aA.anno() || !g.getSupporto().equals("LIBRO"))
             throw new IllegalArgumentException();
         titolo = t;
         annoEdizione = aE;

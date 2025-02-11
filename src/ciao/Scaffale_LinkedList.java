@@ -8,12 +8,11 @@ public class Scaffale_LinkedList extends Scaffale_astratto{
     private LinkedList<Supporto> lista;
     private final int lunghezza_mensola;
 
-    public Scaffale_LinkedList(int ID, LinkedList<Supporto> lista){
-        super(lista, ID);
+    public Scaffale_LinkedList(LinkedList<Supporto> ohmygod,int ID){
+        super(ohmygod,ID);
         this.ID = ID;
         lunghezza_mensola = 10;
-        for(Supporto s : lista)
-            this.lista.add(s);
+        lista = new LinkedList<>();
         this.ordina();
     }
 

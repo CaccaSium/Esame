@@ -8,7 +8,7 @@ public class Supporto_CD implements Supporto{
     Genere genere;
 
     public Supporto_CD(Titolo t, Anno aE, Anno aA, Nominativo n, Genere g ){
-        if(aE.anno() < aA.anno() || !g.getSupporto().equals("CD"))
+        if(aE.anno() > aA.anno() || !g.getSupporto().equals("CD"))
             throw new IllegalArgumentException();
         titolo = t;
         annoEdizione = aE;

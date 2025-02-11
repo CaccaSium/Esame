@@ -8,41 +8,53 @@ public abstract class Scaffale_astratto implements Scaffale{
     private List<Supporto> lista;
     private final int lunghezza_mensola;
 
-    public Scaffale_astratto(List<Supporto> lista, int ID){
-        if(lista == null)
+    public Scaffale_astratto(LinkedList<Supporto> l,int ID){
+        if (l == null)
             throw new IllegalArgumentException();
         lunghezza_mensola = 10;
         this.ID = ID;
-        for(Supporto s : lista)
-            this.lista.add(s);
+        lista = new LinkedList<>();
+        for(Supporto s : l)
+            if(s != null)
+                lista.add(s);
         this.ordina();
+    }
+
+    public LinkedList<Supporto> getLista(){
+        LinkedList<Supporto> n = new LinkedList<>();
+        for (Supporto s : lista)
+            n.add(s);
+        return n;
     }
 
     public void add(Supporto item){
         lista.add(item);
-        this.ordina();
+        if(lista.size() > 2)
+            this.ordina();
     }
 
     public void ordina() {
-        List<Supporto> l_m = new LinkedList<>();
-        while (!this.lista.isEmpty()){
-            var it = this.iterator();
-            while(it.hasNext()){
-                Supporto s = it.next();
-                if(s.getGenere().getSupporto().equals("CD")){
-                    List<Supporto> l_k = this.riempi_Lista("CD");
-                    for(Supporto u : l_k)
-                        l_m.add(u);
+        // Crea due liste separate per CD e LIBRI
+        List<Supporto> cdList = new LinkedList<>();
+        List<Supporto> libroList = new LinkedList<>();
 
-                }
-                if(s.getGenere().getSupporto().equals("LIBRO")){
-                    List<Supporto> l_k = this.riempi_Lista("LIBRO");
-                    for(Supporto u : l_k)
-                        l_m.add(u);
-                }
+        // Itera sulla lista originale e separa i supporti
+        var it = lista.iterator();
+        while (it.hasNext()) {
+            Supporto s = it.next();
+            if (s.getGenere().getSupporto().equals("CD")) {
+                cdList.add(s);
+            } else if (s.getGenere().getSupporto().equals("LIBRO")) {
+                libroList.add(s);
             }
         }
-        this.lista.addAll(l_m);
+
+        // Svuota la lista originale
+        this.lista.clear();
+
+        // Aggiungi prima i CD, poi i LIBRI
+        this.lista.addAll(cdList);
+        this.lista.addAll(libroList);
     }
 
     private List<Supporto> riempi_Lista(String supporto){
