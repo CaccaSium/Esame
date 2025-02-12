@@ -1,35 +1,33 @@
+/*
 package ciao;
 
 import java.util.AbstractList;
 import java.util.Iterator;
-import java.util.LinkedList;
 import java.util.List;
 
-public class Scaffale_LC<T> extends Scaffale_astratto{
+public class Scaffale_LC extends Scaffale_astratto{
+    private My_list<Supporto> m;
+    private int grandezza_mensola;
+
 
     public Scaffale_LC(List<Supporto> s, int ID){
-        super(new My_list<>(s), ID);
+        super(new My_list<Supporto>(s), ID);
+        grandezza_mensola = 10;
     }
 
     @Override
     public Iterator<Supporto> iterator() {
-        return null;
+        return m.iterator();
     }
 }
-class My_list<T> extends AbstractList<T> implements Iterable<T>{
+class My_list<T extends Comparable<? super T>> extends AbstractList<T> implements Iterable<T>{
     private int size;
     private Nodo<T> testa;
-    private int grandezza_mensola;
 
-    public My_list(){
-        size = 0;
-        testa = null;
-        grandezza_mensola = 10;
-    }
 
-    public My_list(List<Supporto> l){
-        for(Supporto elem : l)
-            this.aggiungiInCoda(elem.getTitolo(),elem.annoAcquisto(),elem.annoEdizione(),elem.getAutore(),elem.getGenere());
+    public My_list(List<T> l){
+        for(T elem : l)
+            this.aggiungiInCoda(elem);
     }
 
     @Override
@@ -41,73 +39,73 @@ class My_list<T> extends AbstractList<T> implements Iterable<T>{
         return testa;
     }
 
+
     @Override
     public T get(int index) {
         return null;
     }
 
-    public void aggiungiInCoda(Titolo info,Anno anno_a, Anno anno_e, Nominativo autore, Genere genere){
-        if(info == null)
+    public void aggiungiInCoda(T supporto){
+        if(supporto == null)
             throw new IllegalArgumentException("sei un coglione");
         if(testa == null){
-            testa = new Nodo<>(info,null,anno_a,anno_a,autore,genere);
+            testa = new Nodo<>(supporto, null);
         }
         else{
             Nodo<T> n = testa;
             while (n.next != null)
                 n = n.next;
-            n.next = new Nodo<>(info,null,anno_a,anno_a,autore,genere);
+            n.next = new Nodo<>(supporto, null);
         }
         size++;
     }
 
-    public List<Nodo<T>> mensola(int index){
-        int inizio = index * grandezza_mensola;
-        int fine = (index * grandezza_mensola)+grandezza_mensola-1;
-        if(inizio >= size || fine >= size)
-            throw new IllegalArgumentException("Sei di nuovo un coglione");
-        List<Nodo<T>> lista_fin = new LinkedList<>();
-        int i = 0;
-        Nodo<T> n = testa;
-        while (i < inizio){
-            n = n.next;
-            i++;
-        }
-        while (i < fine){
-            lista_fin.add(n);
-            n = n.next;
-            i++;
-        }
-        return lista_fin;
+    @Override
+    public Iterator<T> iterator() {
+        return new Iterator<T>() {
+            Nodo<T> curr = testa;
+
+            @Override
+            public boolean hasNext() {
+                return curr.next!= null;
+            }
+
+            @Override
+            public T next() {
+                if(this.hasNext()){
+                    var info = curr.supporto;
+                    curr = curr.next;
+                    return info;
+                }
+                throw new RuntimeException();
+            }
+        };
     }
 
-    public List<Nodo<T>> cerca(String keyword){
-        List<Nodo<T>> lista_fin = new LinkedList<>();
-        Nodo<T> n = testa;
-        while (n.next != null){
-            if(n.titolo.titolo().contains(keyword))
-                lista_fin.add(n);
-            n = n.next;
-        }
-        return lista_fin;
-    }
-
-    private static class Nodo<T>{ //qua il nodo sarebbe il supporto
-        private Titolo titolo;
-        private Anno anno_e;
-        private Anno anno_a;
-        private Nominativo autore;
-        private Genere genere;
+    private static class Nodo<T extends Comparable<? super T>>{ //qua il nodo sarebbe il supporto
+        private T supporto;
         private Nodo<T> next;
 
-        public Nodo(Titolo titolo, Nodo<T> next, Anno anno_a, Anno anno_e, Nominativo autore, Genere genere) {
-            this.titolo = titolo;
-            this.anno_a = anno_a;
-            this.anno_e = anno_e;
-            this.autore = autore;
-            this.genere = genere;
+        public Nodo(T s, Nodo<T> next) {
+            supporto = s;
             this.next = next;
         }
 
+        public T getSupporto() {
+            return supporto;
+        }
+
+        public void setSupporto(T supporto) {
+            this.supporto = supporto;
+        }
+
+        public Nodo<T> getNext() {
+            return next;
+        }
+
+        public void setNext(Nodo<T> next) {
+            this.next = next;
+        }
     }
 }
+*/

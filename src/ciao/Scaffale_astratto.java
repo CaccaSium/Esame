@@ -2,13 +2,14 @@ package ciao;
 
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Optional;
 
 public abstract class Scaffale_astratto implements Scaffale{
     private final int ID;
-    private List<Supporto> lista;
+    private List<Optional<Supporto>> lista;
     private final int lunghezza_mensola;
 
-    public Scaffale_astratto(List<Supporto> l,int ID){
+    public Scaffale_astratto(List<Optional<Supporto>> l,int ID){
         if (l == null)
             throw new IllegalArgumentException();
         lunghezza_mensola = 10;
@@ -17,73 +18,72 @@ public abstract class Scaffale_astratto implements Scaffale{
         this.ordina();
     }
 
-    public LinkedList<Supporto> getLista(){
-        LinkedList<Supporto> n = new LinkedList<>();
-        for (Supporto s : lista)
+    public LinkedList<Optional<Supporto>> getLista(){
+        LinkedList<Optional<Supporto>> n = new LinkedList<>();
+        for (Optional<Supporto> s : lista)
             n.add(s);
         return n;
     }
 
     public void add(Supporto item){
-        lista.add(item);
+        lista.add(Optional.ofNullable(item));
         if(lista.size() > 2)
             this.ordina();
     }
 
     public void ordina() {
         // Crea due liste separate per CD e LIBRI
-        List<Supporto> cdList = new LinkedList<>();
-        List<Supporto> libroList = new LinkedList<>();
+        List<Optional<Supporto>> cdList = new LinkedList<>();
+        List<Optional<Supporto>> libroList = new LinkedList<>();
 
         // Itera sulla lista originale e separa i supporti
-        var it = lista.iterator();
-        while (it.hasNext()) {
-            Supporto s = it.next();
-            if (s.getGenere().getSupporto().equals("CD")) {
-                cdList.add(s);
-            } else if (s.getGenere().getSupporto().equals("LIBRO")) {
-                libroList.add(s);
+        for (Optional<Supporto> sOpt : lista) {  // Usa 'sOpt' per gli Optional
+            if (sOpt != null && sOpt.isPresent()) {
+                Supporto s = sOpt.get();
+                if (s.getGenere().getSupporto().equals("CD")) {
+                    cdList.add(Optional.of(s));
+                } else if (s.getGenere().getSupporto().equals("LIBRO")) {
+                    libroList.add(Optional.of(s));
+                }
+            }
+        }
+        // Svuota la lista originale
+        this.lista.clear();
+
+        if(cdList.size() < lunghezza_mensola){
+            int c = lunghezza_mensola - cdList.size();
+            while (c != 0){
+                cdList.add(Optional.empty());
+                c--;
             }
         }
 
-        // Svuota la lista originale
-        this.lista.clear();
+        if(libroList.size() < lunghezza_mensola){
+            int c = lunghezza_mensola - libroList.size();
+            while (c != 0){
+                libroList.add(Optional.empty());
+                c--;
+            }
+        }
 
         // Aggiungi prima i CD, poi i LIBRI
         this.lista.addAll(cdList);
         this.lista.addAll(libroList);
     }
 
-    private List<Supporto> riempi_Lista(String supporto){
-        List<Supporto> fin = new LinkedList<>();
-        var it1 = this.iterator();
-        int c = 0;
-        while (it1.hasNext() && c < this.lunghezza_mensola){
-            Supporto s = it1.next();
-            if(s.getGenere().getSupporto().equals(supporto)){
-                fin.add(s);
-                it1.remove();
-                c++;
-            }
-        }
-        while (c < this.lunghezza_mensola){
-            fin.add(null);
-            c++;
-        }
-        return fin;
-    }
 
     public List<Supporto> mensola(int index){
         int n_mensole = lista.size() / lunghezza_mensola;
         if (index >= n_mensole || index < 0)
             throw new IllegalArgumentException();
+
         List<Supporto> lista_finale = new LinkedList<>();
-        int inizio = index * 10;
-        int fine = (index * 10) -1;
+        int inizio = index * lunghezza_mensola;
+        int fine = (index + 1) * lunghezza_mensola - 1;
         int i = 0;
-        for(Supporto s: this){
-            if(i>=inizio && index <= fine)
-                lista_finale.add(s);
+        for(Optional<Supporto> s: lista){
+            if(i >= inizio && i < fine)
+                lista_finale.add(s.orElse(null));
             if (i > fine)
                 break;
             i++;
@@ -93,9 +93,10 @@ public abstract class Scaffale_astratto implements Scaffale{
 
     public List<Supporto> cerca(String keyword){
         List<Supporto> lista = new LinkedList<>();
-        for(Supporto s: this){
-            if(s.getTitolo().titolo().contains(keyword)){
-                lista.add(s);
+        for(Optional<Supporto> s: this.lista){
+            Supporto m = s.orElse(null);
+            if(m != null && m.getTitolo().titolo().contains(keyword)){
+                lista.add(m);
             }
         }
         return lista;

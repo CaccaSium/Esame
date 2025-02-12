@@ -1,6 +1,7 @@
 package ciao;
 
 import java.util.LinkedList;
+import java.util.Optional;
 
 public class Main {
     public static void main(String[] args) {
@@ -14,24 +15,21 @@ public class Main {
         Supporto libro2 = new Supporto_LIBRO(new Titolo("Cacca"), new Anno(1949), new Anno(2010), new Nominativo("George Orwell"), g1);
         Supporto cd1 = new Supporto_CD(new Titolo("The Dark Side of the Moon"), new Anno(1973), new Anno(2015), new Nominativo("Pink Floyd"), g2);
 
-        // Richiamo metodi su Supporto
-        System.out.println("Dettagli libro 1: " + libro1.getTitolo().titolo() + ", Autore: " + libro1.getAutore().autore());
-        System.out.println("Anno edizione: " + libro1.annoEdizione().anno());
-
-        System.out.println("Dettagli CD 1: " + cd1.getTitolo().titolo() + ", Artista: " + cd1.getAutore().autore());
-
-        // Creazione di un oggetto Scaffale concreto (ipotizzo l'implementazione Scaffale_LC)
-        var lista = new LinkedList<Supporto>();
-        lista.add(libro1);
-        lista.add(libro2);
-        lista.add(cd1);
+        // Creazione di un oggetto Scaffale concreto
+        var lista = new LinkedList<Optional<Supporto>>();
+        lista.add(Optional.of(libro1));
+        lista.add(Optional.of(libro2));
+        lista.add(Optional.of(cd1));
         Scaffale scaffale = new Scaffale_LinkedList(lista,12);
 
         // Richiamo dei metodi di Scaffale
         System.out.println("Contenuto dello scaffale iniziale:");
-        for (Supporto item : scaffale.getLista()) {
-            System.out.println("- " + item.getTitolo().titolo());
+        for (Optional<Supporto> item : scaffale.getLista()) {
+            System.out.println(item);
         }
+
+        System.out.println(scaffale.mensola(1));
+        System.out.println(scaffale.cerca("Il"));
     }
 }
 
